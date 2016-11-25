@@ -1,0 +1,15 @@
+{
+	"port": 3332,
+	"bodyLimit": "100kb",
+	"corsHeaders": ["Link"],
+	"endpoints": [
+		{
+			"url": "greeting",
+			"method": "GET"
+		},
+		{
+			"url": "parting",
+			"method": "POST"
+		}
+	]
+}
