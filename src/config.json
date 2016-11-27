@@ -1,5 +1,5 @@
 {
-	"port": 3332,
+	"port": 3039,
 	"bodyLimit": "100kb",
 	"corsHeaders": ["Link"],
 	"endpoints": [

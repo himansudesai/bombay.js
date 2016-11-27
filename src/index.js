@@ -42,17 +42,26 @@ initializeDb( db => {
 var socketServer = require('http').Server(app);
 var io = require('socket.io')(socketServer);
 
-socketServer.listen(3333);
+var count = 0;
+socketServer.listen(3033);
 console.log('++++ connecting to socket...');
 io.on('connection', function (socket) {
+  var companies = ['GOOG', 'YHOO', 'A', 'C', 'SPY'];
   setTimeout(function() {
     console.log('++++ connected.  sending...')
-    socket.emit('check', { id: 'greeting' });
-    socket.on('results', function (data) {
+        socket.emit('bom-do', { commands: [
+          { type: 'SET-INPUT-VAL', css: 'input', val: 'DIA' },
+          { type: 'CLICK', css: 'button' }
+        ]});
+    socket.on('RESULTS', function (data) {
       console.log(data);
-      setTimeout(function() { 
-        socket.emit('check', { id: 'greeting'});
-      }, 10000);
+      var co = companies.pop();
+      if (co) {
+        socket.emit('bom-do', { commands: [
+          { type: 'SET-INPUT-VAL', css: 'input', val: co },
+          { type: 'CLICK', css: 'button' }
+        ]});
+      }
     });
   }, 250);  
 });
