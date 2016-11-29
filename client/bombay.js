@@ -38,12 +38,10 @@
         }
       }
       if (command.type == 'CLICK') {
-        setTimeout(function() {
-          var domEle = $(command.css);
-          console.log('    _ domEle = ' + domEle);
-          $(domEle).click();
-          socket.emit('RESULTS', { command: command, success: true });
-        }, 500);
+        var domEle = $(command.css);
+        console.log('    _ domEle = ' + domEle);
+        $(domEle).click();
+        socket.emit('RESULTS', { command: command, success: true });
       }
       if (command.type == 'EXISTS') {
         setTimeout(function() {
@@ -51,6 +49,15 @@
           console.log('++++ EXISTS ' + command.css + ' domEle = ' + domEle.length);
           socket.emit('RESULTS', {command: command, details: ((domEle.length > 0) ? true : false)});
         }, 500);
+      }
+      console.log('~~~~ checking for TEXT-VAL');
+      if (command.type == 'TEXT-VAL') {
+        setTimeout(function() {
+          console.log('@@@@ inside TEXT-VAL');
+          var domEle = $(command.css);
+          console.log('++++ length of ' + command.css + ' = ' + domEle.length);
+          socket.emit('RESULTS', {command: command, details: ((domEle.length > 0) ? $(domEle).text() : '')});
+        }, 1000);
       }
     }
 
