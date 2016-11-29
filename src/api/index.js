@@ -21,7 +21,7 @@ export default ({ config, db }) => {
 		} else if (endpoint.method == 'POST') {
 			console.log('      __ POST on ' + endpoint.url);
 			api.post('/' + config.endpoints[i].url, (req, res) => {
-				res.json({ 'greeting': 'hello' });
+				res.json({ 'parting': 'goodbye' });
 			});
 		}
 	}

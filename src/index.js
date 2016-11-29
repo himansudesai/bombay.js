@@ -46,27 +46,38 @@ var count = 0;
 socketServer.listen(3033);
 console.log('++++ connecting to socket...');
 io.on('connection', function (socket) {
-  var companies = ['GOOG', 'YHOO', 'A', 'C', 'SPY'];
+  console.log('++++ connected.  sending...');
+  var commands = [
+    {type: 'EXISTS', css: '#quote-details'},
+    {type: 'SET-INPUT-VAL', val: 'GOOG', css: 'input'},
+    {type: 'CLICK', css: 'simple-http button'},
+    {type: 'EXISTS', css: '#quote-details'},
+    {type: 'SET-INPUT-VAL', val: 'YHOO', css: 'input'},
+    {type: 'CLICK', css: 'simple-http button'},
+    {type: 'EXISTS', css: '#quote-details'},
+    {type: 'SET-INPUT-VAL', val: 'A', css: 'input'},
+    {type: 'CLICK', css: 'simple-http button'},
+    {type: 'EXISTS', css: '#quote-details'},
+    {type: 'SET-INPUT-VAL', val: 'C', css: 'input'},
+    {type: 'CLICK', css: 'simple-http button'},
+    {type: 'EXISTS', css: '#quote-details'},
+    {type: 'SET-INPUT-VAL', val: 'SPY', css: 'input'},
+    {type: 'CLICK', css: 'simple-http button'},
+    {type: 'EXISTS', css: '#quote-details'}
+  ];
   setTimeout(function() {
-    console.log('++++ connected.  sending...')
-        socket.emit('bom-do', { commands: [
-          { type: 'SET-INPUT-VAL', css: 'input', val: 'DIA' },
-          { type: 'CLICK', css: 'button' }
-        ]});
+    var command = commands.pop();
+    socket.emit('bom-do', { command: command });
     socket.on('RESULTS', function (data) {
       console.log(data);
-      var co = companies.pop();
-      if (co) {
-        socket.emit('bom-do', { commands: [
-          { type: 'SET-INPUT-VAL', css: 'input', val: co },
-          { type: 'CLICK', css: 'button' }
-        ]});
+      command = commands.pop();
+      if (command) {
+        socket.emit('bom-do', { command: command } );
+      } else {
+        process.exit();
       }
     });
   }, 250);  
 });
-
-
-
 
 export default app;

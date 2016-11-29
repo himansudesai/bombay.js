@@ -17,40 +17,41 @@
     connect('http://localhost:3033');
 
     function bomDo(data) {
-      console.log('++++ num commands = ' + data.commands.length);
-      for (var data_i=0; data_i<data.commands.length; data_i++) {
-        var command = data.commands[data_i];
-        console.log('++++ command ' + data_i + ' = ' + JSON.stringify(command));
-        if (command.type == 'SET-INPUT-VAL') {
-          console.log('++++ command.css = ' + command.css);
-          var domEle = $(command.css);
-          if (!domEle) {
-//            socket.emit('RESULTS', { command: command, success: false, detail: 'No matching elements for ' + command.css });
-          } else {
-            var currentVal = $(domEle).val();
-            // clear out the current contents of the input field
-            for (var val_i=0; val_i<currentVal.length; val_i++) {
-            console.log('      _ backspacing...');
-              $(domEle).sendkeys ('{backspace}');
-            }
-            console.log('     _ sending ' + command.val);
-            $(domEle).sendkeys (command.val);
-            console.log('      _ sent!');
-  //          socket.emit('RESULTS', { command: command, success: true });
+      var command = data.command;
+      console.log('++++ command = ' + JSON.stringify(command));
+      if (command.type == 'SET-INPUT-VAL') {
+        console.log('++++ command.css = ' + command.css);
+        var domEle = $(command.css);
+        if (!domEle) {
+          socket.emit('RESULTS', { command: command, success: false, details: 'No matching elements for ' + command.css });
+        } else {
+          var currentVal = $(domEle).val();
+          // clear out the current contents of the input field
+          for (var val_i=0; val_i<currentVal.length; val_i++) {
+          console.log('      _ backspacing...');
+            $(domEle).sendkeys ('{backspace}');
           }
-        }
-        if (command.type == 'CLICK') {
-          setTimeout(function() {
-            var domEle = $(command.css);
-            console.log('    _ domEle = ' + domEle);
-            $(domEle[2]).click();
-            socket.emit('RESULTS', { command: command, success: true });
-          }, 100);
+          console.log('     _ sending ' + command.val);
+          $(domEle).sendkeys (command.val);
+          console.log('      _ sent!');
+          socket.emit('RESULTS', { command: command, success: true });
         }
       }
-      var type = data.type;
-      if (type == 'FIND')
-      socket.emit('results', { id: data.id, value: 'WORKING!' });
+      if (command.type == 'CLICK') {
+        setTimeout(function() {
+          var domEle = $(command.css);
+          console.log('    _ domEle = ' + domEle);
+          $(domEle).click();
+          socket.emit('RESULTS', { command: command, success: true });
+        }, 500);
+      }
+      if (command.type == 'EXISTS') {
+        setTimeout(function() {
+          var domEle = $(command.css);
+          console.log('++++ EXISTS ' + command.css + ' domEle = ' + domEle.length);
+          socket.emit('RESULTS', {command: command, details: ((domEle.length > 0) ? true : false)});
+        }, 500);
+      }
     }
 
     function log(msg) {
