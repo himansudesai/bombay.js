@@ -6,8 +6,8 @@ import initializeDb from './db';
 import middleware from './middleware';
 import api from './api';
 import config from './config.json';
-
 import { Router } from 'express';
+import bombay from './lib/bombay';
 
 
 let app = express();
@@ -24,7 +24,7 @@ app.use(bodyParser.json({
 
 // connect to db
 initializeDb( db => {
-
+console.log('++++ db initialized ');
 	// internal middleware
 	app.use(middleware({ config, db }));
 
@@ -36,51 +36,12 @@ initializeDb( db => {
 	app.server.listen(process.env.PORT || config.port);
 
 	console.log(`Started on port ${app.server.address().port}`);
-});
 
-
-var socketServer = require('http').Server(app);
-var io = require('socket.io')(socketServer);
-
-var count = 0;
-socketServer.listen(3033);
-console.log('++++ connecting to socket...');
-io.on('connection', function (socket) {
-  console.log('++++ connected.  sending...');
-  var commands = [
-    {type: 'EXISTS', css: '#quote-details'},
-    {type: 'SET-INPUT-VAL', val: 'GOOG', css: 'input'},
-    {type: 'CLICK', css: 'simple-http button'},
-    {type: 'EXISTS', css: '#quote-details'},
-    {type: 'TEXT-VAL', css: '#company-name'},
-    {type: 'SET-INPUT-VAL', val: 'YHOO', css: 'input'},
-    {type: 'CLICK', css: 'simple-http button'},
-    {type: 'TEXT-VAL', css: '#company-name'},
-    {type: 'SET-INPUT-VAL', val: 'A', css: 'input'},
-    {type: 'CLICK', css: 'simple-http button'},
-    {type: 'TEXT-VAL', css: '#company-name'},
-    {type: 'SET-INPUT-VAL', val: 'C', css: 'input'},
-    {type: 'CLICK', css: 'simple-http button'},
-    {type: 'TEXT-VAL', css: '#company-name'},
-    {type: 'SET-INPUT-VAL', val: 'SPY', css: 'input'},
-    {type: 'CLICK', css: 'simple-http button'},
-    {type: 'TEXT-VAL', css: '#company-name'},
-  ];
-  setTimeout(function() {
-    var command = commands.shift();
-    socket.emit('bom-do', { command: command });
-    console.log('++++ sent command ' + JSON.stringify(command));
-    socket.on('RESULTS', function (data) {
-      console.log(data);
-      command = commands.shift();
-      if (command) {
-        socket.emit('bom-do', { command: command } );
-      console.log('++++ sent command ' + JSON.stringify(command));
-      } else {
-        process.exit();
-      }
-    });
-  }, 250);  
+  console.log('++++ bombay = ' + bombay);
+  for (var att in bombay) {
+    console.log('++++ bombay att ' + att);
+  }
+  bombay.connect(app);
 });
 
 export default app;

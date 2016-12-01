@@ -1,4 +1,4 @@
-    var retry = 0;
+var retry = 0;
     var socket;
     function connect(url) {
       retry++;
@@ -50,7 +50,6 @@
           socket.emit('RESULTS', {command: command, details: ((domEle.length > 0) ? true : false)});
         }, 500);
       }
-      console.log('~~~~ checking for TEXT-VAL');
       if (command.type == 'TEXT-VAL') {
         setTimeout(function() {
           console.log('@@@@ inside TEXT-VAL');
