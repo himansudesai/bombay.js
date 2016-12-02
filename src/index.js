@@ -28,9 +28,7 @@ console.log('++++ db initialized ');
 	// internal middleware
 	app.use(middleware({ config, db }));
 
-	// api router
-
-	console.log('++++ app about to use /');
+  // endpoints
 	app.use('/', api({ config, db }));
 
 	app.server.listen(process.env.PORT || config.port);
@@ -41,7 +39,9 @@ console.log('++++ db initialized ');
   for (var att in bombay) {
     console.log('++++ bombay att ' + att);
   }
-  bombay.connect(app);
+  bombay.server.connect(app, function() {
+    bombay.server.sendStuffs();
+  });
 });
 
 export default app;
