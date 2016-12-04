@@ -30,7 +30,8 @@
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "resource-router-middleware": "^0.5.1",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "rsvp":"3.3.3"
   },
   "repository": "himansudesai/bombay.js",
   "license": "MIT",
