@@ -8,6 +8,7 @@ import api from './api';
 import config from './config.json';
 import { Router } from 'express';
 import bombay from './lib/bombay';
+global['RSVP'] = require('rsvp');
 
 
 let app = express();
@@ -35,13 +36,31 @@ console.log('++++ db initialized ');
 
 	console.log(`Started on port ${app.server.address().port}`);
 
-  console.log('++++ bombay = ' + bombay);
-  for (var att in bombay) {
-    console.log('++++ bombay att ' + att);
-  }
-  bombay.server.connect(app, function() {
-    bombay.server.sendStuffs();
-  });
+  bombay.server.connect(app).then(function() {
+    return bombay.client.exists('#quote-details');
+  }).then(function(results) {
+    console.log('++++ "#quote-details" exists = ' + results);
+    return bombay.client.setInputVal('GOOG', 'input');
+  }).then(function(results) {
+    return bombay.client.click('simple-http button');
+  }).then(function(results) {
+    return bombay.client.exists('#quote-details');
+  }).then(function(results) {
+    console.log('++++ "#quote-details" exists = ' + results);
+    return bombay.client.getTextVal('#company-name');
+  }).then(function(results) {
+    console.log('++++ getText results = ' + results);    
+    return bombay.client.setInputVal('SPY', 'input');
+  }).then(function(results) {
+    return bombay.client.click('simple-http button');
+  }).then(function(results) {
+    return bombay.client.getTextVal('#company-name');
+  }).then(function(results) {
+    console.log('++++ getText results = ' + results);
+  }).catch(function(err) {
+    console.log('++++ ERROR connecting to socket.  Exiting... ' + err);
+    process.exit();
+  })
 });
 
 export default app;
