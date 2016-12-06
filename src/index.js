@@ -40,6 +40,7 @@ console.log('++++ db initialized ');
     return bombay.client.exists('#quote-details');
   }).then(function(results) {
     console.log('++++ "#quote-details" exists = ' + results);
+    bombay.assertEquals(results, false);
     return bombay.client.setInputVal('GOOG', 'input');
   }).then(function(results) {
     return bombay.client.click('simple-http button');
@@ -47,9 +48,11 @@ console.log('++++ db initialized ');
     return bombay.client.exists('#quote-details');
   }).then(function(results) {
     console.log('++++ "#quote-details" exists = ' + results);
+    bombay.assertEquals(results, true);
     return bombay.client.getTextVal('#company-name');
   }).then(function(results) {
-    console.log('++++ getText results = ' + results);    
+    console.log('++++ getText results = ' + results);  
+    bombay.assertEquals(results, 'Alphabet Inc.');
     return bombay.client.setInputVal('SPY', 'input');
   }).then(function(results) {
     return bombay.client.click('simple-http button');
@@ -57,8 +60,10 @@ console.log('++++ db initialized ');
     return bombay.client.getTextVal('#company-name');
   }).then(function(results) {
     console.log('++++ getText results = ' + results);
+    bombay.assertEquals(results, 'SPDR S&P 500');
+    process.exit();
   }).catch(function(err) {
-    console.log('++++ ERROR connecting to socket.  Exiting... ' + err);
+    console.log('++++ Unexpected.  ' + err + '\nExiting...');
     process.exit();
   })
 });

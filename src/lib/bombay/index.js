@@ -29,8 +29,12 @@ export default (function () {
     return promise;
   }
 
-  function foo() {
-      
+  bombay.assertEquals = function(src, tar) {
+    if (src == tar) {
+      return true;
+    } else {
+      throw new Error(src + ' is not equal to ' + tar);
+    }
   }
 
   bombay.client.exists = function (css) {
