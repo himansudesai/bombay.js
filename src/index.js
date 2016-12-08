@@ -49,7 +49,7 @@ console.log('++++ db initialized ');
   }).then(function(results) {
     console.log('++++ "#quote-details" exists = ' + results);
     bombay.assertEquals(results, true);
-    return bombay.client.getTextVal('#company-name');
+    return bombay.client.getTextVal('#company-name', 250);
   }).then(function(results) {
     console.log('++++ getText results = ' + results);  
     bombay.assertEquals(results, 'Alphabet Inc.');
@@ -57,7 +57,7 @@ console.log('++++ db initialized ');
   }).then(function(results) {
     return bombay.client.click('simple-http button');
   }).then(function(results) {
-    return bombay.client.getTextVal('#company-name');
+    return bombay.client.getTextVal('#company-name', 250);
   }).then(function(results) {
     console.log('++++ getText results = ' + results);
     bombay.assertEquals(results, 'SPDR S&P 500');

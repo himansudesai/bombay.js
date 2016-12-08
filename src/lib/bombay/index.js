@@ -70,10 +70,14 @@ export default (function () {
     return promise;
   }
 
-  bombay.client.getTextVal = function (css) {
+  bombay.client.getTextVal = function (css, wait) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
-      bombay.server.socket.emit('bom-do', { command: { type: 'TEXT-VAL', css: css, msgId: msgId }});
+      var command = { type: 'TEXT-VAL', css: css, msgId: msgId };
+      if (wait) {
+        command.wait = wait;
+      }
+      bombay.server.socket.emit('bom-do', { command: command});
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details); 
       });
