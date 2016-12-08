@@ -47,7 +47,6 @@ jasmine.configureDefaultReporter({
     jasmineCorePath: jasmine.jasmineCorePath
 });
 
-
 // connect to db
 initializeDb( db => {
 console.log('++++ db initialized ');
@@ -65,10 +64,10 @@ console.log('++++ db initialized ');
     return bombay.client.exists('#quote-details');
   }).then(function(results) {
     console.log('++++ "#quote-details" exists = ' + results);
-    bombay.assertEquals(results, false);
+//    bombay.assertEquals(results, false);
     return bombay.client.setInputVal('GOOG', 'input');
   }).then(function(results) {
-    return bombay.client.click('simple-http button');
+    return bombay.client.click('simple-http button', 250);
   }).then(function(results) {
     return bombay.client.exists('#quote-details');
   }).then(function(results) {
@@ -80,7 +79,7 @@ console.log('++++ db initialized ');
     bombay.assertEquals(results, 'Alphabet Inc.');
     return bombay.client.setInputVal('SPY', 'input');
   }).then(function(results) {
-    return bombay.client.click('simple-http button');
+    return bombay.client.click('simple-http button', 250);
   }).then(function(results) {
     return bombay.client.getTextVal('#company-name', 500);
   }).then(function(results) {

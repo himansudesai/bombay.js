@@ -56,7 +56,7 @@
             socket.emit(command.msgId, {command: command, details: ((domEle.length > 0) ? true : false)});
           }, 1000);
         } else {
-          socket.emit('RESULTS', {command: command, details: true});
+          socket.emit(command.msgId, {command: command, details: true});
         }
       }
       if (command.type == 'TEXT-VAL') {
