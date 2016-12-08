@@ -48,10 +48,14 @@ export default (function () {
     return promise;
   }
 
-  bombay.client.click = function (css) {
+  bombay.client.click = function (css, wait) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
-      bombay.server.socket.emit('bom-do', { command: { type: 'CLICK', css: css, msgId: msgId }});
+      var command = { type: 'CLICK', css: css, msgId: msgId };
+      if (wait) {
+        command.wait = wait;
+      }
+      bombay.server.socket.emit('bom-do', { command: command});
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details); 
       });

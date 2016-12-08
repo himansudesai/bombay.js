@@ -23,6 +23,31 @@ app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
 
+var JasmineLib = require('jasmine');
+var jasmine = new JasmineLib();
+
+jasmine.loadConfig({
+    spec_dir: __dirname + '/spec',
+    spec_files: [
+        'utils/**/*[sS]pec.js'
+    ],
+    helpers: [
+        'helpers/**/*.js'
+    ],
+    stopSpecOnExpectationFailure: false,
+    random: false
+});
+
+jasmine.configureDefaultReporter({
+    timer: new jasmine.jasmine.Timer(),
+    print: function() {
+        process.stdout.write(util.format.apply(this, arguments));
+    },
+    showColors: true,
+    jasmineCorePath: jasmine.jasmineCorePath
+});
+
+
 // connect to db
 initializeDb( db => {
 console.log('++++ db initialized ');
@@ -49,7 +74,7 @@ console.log('++++ db initialized ');
   }).then(function(results) {
     console.log('++++ "#quote-details" exists = ' + results);
     bombay.assertEquals(results, true);
-    return bombay.client.getTextVal('#company-name', 250);
+    return bombay.client.getTextVal('#company-name', 500);
   }).then(function(results) {
     console.log('++++ getText results = ' + results);  
     bombay.assertEquals(results, 'Alphabet Inc.');
@@ -57,10 +82,12 @@ console.log('++++ db initialized ');
   }).then(function(results) {
     return bombay.client.click('simple-http button');
   }).then(function(results) {
-    return bombay.client.getTextVal('#company-name', 250);
+    return bombay.client.getTextVal('#company-name', 500);
   }).then(function(results) {
     console.log('++++ getText results = ' + results);
     bombay.assertEquals(results, 'SPDR S&P 500');
+    jasmine.addSpecFile(__dirname + '/spec/fooSpec.js');
+  jasmine.execute();
     process.exit();
   }).catch(function(err) {
     console.log('++++ Unexpected.  ' + err + '\nExiting...');

@@ -1,4 +1,4 @@
-    var retry = 0;
+\    var retry = 0;
     var socket;
     function connect(url) {
       retry++;
@@ -41,8 +41,11 @@
         }
       }
       if (command.type == 'CLICK') {
+        var timeoutVal = (data.command.wait) ? data.command.wait : 250;
         var domEle = $(command.css);
-        $(domEle).click();
+        setTimeout(function() {
+          $(domEle).click();
+        }, timeoutVal);
         socket.emit(command.msgId, { command: command, success: true });
       }
       if (command.type == 'EXISTS') {
