@@ -89,5 +89,20 @@ export default (function () {
     return promise;
   }
 
+  bombay.server.bom_it = function (description, cb) {
+    console.log('aaaa inside bom_it');
+    var promise = new RSVP.Promise(function (resolve, reject) {
+      console.log('aaaa inside promise of bom_it');
+      it(description, function() {
+        console.log('aaaa inside jasmine it');
+        var res = cb();
+        console.log('aaaa after cb()');
+        resolve(res);
+      })
+    });
+    console.log('aaaa initial promise return');
+    return promise;
+  }
+
   return bombay;
 })();

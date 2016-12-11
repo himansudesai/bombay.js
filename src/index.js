@@ -9,6 +9,8 @@ import config from './config.json';
 import { Router } from 'express';
 import bombay from './lib/bombay';
 global['RSVP'] = require('rsvp');
+global['bombay'] = bombay;
+global['bom_it'] = bombay.server.bom_it;
 
 
 let app = express();
@@ -22,6 +24,8 @@ app.use(cors({
 app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
+
+global['app'] = app;
 
 var JasmineLib = require('jasmine');
 var jasmine = new JasmineLib();
@@ -53,45 +57,15 @@ console.log('++++ db initialized ');
 	// internal middleware
 	app.use(middleware({ config, db }));
 
-  // endpoints
+    // endpoints
 	app.use('/', api({ config, db }));
 
 	app.server.listen(process.env.PORT || config.port);
 
 	console.log(`Started on port ${app.server.address().port}`);
 
-  bombay.server.connect(app).then(function() {
-    return bombay.client.exists('#quote-details');
-  }).then(function(results) {
-    console.log('++++ "#quote-details" exists = ' + results);
-//    bombay.assertEquals(results, false);
-    return bombay.client.setInputVal('GOOG', 'input');
-  }).then(function(results) {
-    return bombay.client.click('simple-http button', 250);
-  }).then(function(results) {
-    return bombay.client.exists('#quote-details');
-  }).then(function(results) {
-    console.log('++++ "#quote-details" exists = ' + results);
-    bombay.assertEquals(results, true);
-    return bombay.client.getTextVal('#company-name', 500);
-  }).then(function(results) {
-    console.log('++++ getText results = ' + results);  
-    bombay.assertEquals(results, 'Alphabet Inc.');
-    return bombay.client.setInputVal('SPY', 'input');
-  }).then(function(results) {
-    return bombay.client.click('simple-http button', 250);
-  }).then(function(results) {
-    return bombay.client.getTextVal('#company-name', 500);
-  }).then(function(results) {
-    console.log('++++ getText results = ' + results);
-    bombay.assertEquals(results, 'SPDR S&P 500');
-    jasmine.addSpecFile(__dirname + '/spec/fooSpec.js');
+  jasmine.addSpecFile(__dirname + '/spec/fooSpec.js');
   jasmine.execute();
-    process.exit();
-  }).catch(function(err) {
-    console.log('++++ Unexpected.  ' + err + '\nExiting...');
-    process.exit();
-  })
 });
 
 export default app;
