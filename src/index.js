@@ -64,7 +64,7 @@ console.log('++++ db initialized ');
 
 	console.log(`Started on port ${app.server.address().port}`);
 
-  jasmine.addSpecFile(__dirname + '/spec/fooSpec.js');
+  jasmine.addSpecFile(__dirname + '/spec/firstSpec.js');
   jasmine.execute();
 });
 
