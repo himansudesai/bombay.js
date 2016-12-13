@@ -1,8 +1,28 @@
 describe('JavaScript addition operator', function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+    var config = {
+        "port": 3039,
+        "bodyLimit": "100kb",
+        "corsHeaders": ["Link"],
+        "endpoints": [
+            {
+                "url": "greeting",
+                "method": "GET"
+            },
+            {
+                "url": "parting",
+                "method": "POST"
+            }
+        ]
+    };
+
+    beforeAll(function() {
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+        bombay.server.configureEndpoints(config);
+    });
+
     it('does end-to-end ui testing', function (done) {
-        bombay.server.connect(app).then(function() {
-            console.log('333');
+        bombay.server.connect().then(function() {
             return bombay.client.exists('#quote-details');
         }).then(function(results) {
             // expect(results).toBe(false);

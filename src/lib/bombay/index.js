@@ -7,10 +7,12 @@ export default (function () {
     client: {},
     server: {
         socket: undefined
-    }
+    },
+    expressConfig: {}
   };
-  bombay.server.connect = function (app, cb) {
+  bombay.server.connect = function () {
     console.log('++++ beginning - socket = ' + bombay.server.socket);
+    var app = bombay.expressConfig.app;
     var promise = new RSVP.Promise(function (resolve, reject) {
         socketServer = require('http').Server(app);
         io = require('socket.io')(socketServer);
@@ -102,6 +104,14 @@ export default (function () {
     });
     console.log('aaaa initial promise return');
     return promise;
+  }
+
+  bombay.server.configureEndpoints = function(cc) {
+    var app = bombay.expressConfig.app;
+    var db = bombay.expressConfig.expressDB;
+    var api = bombay.expressConfig.router;
+    console.log('++++ bombay.server.configureEndpoints - config = ' + JSON.stringify(cc));
+    	app.use('/', api(cc, db));
   }
 
   return bombay;

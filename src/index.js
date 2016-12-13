@@ -10,7 +10,6 @@ import { Router } from 'express';
 import bombay from './lib/bombay';
 global['RSVP'] = require('rsvp');
 global['bombay'] = bombay;
-global['bom_it'] = bombay.server.bom_it;
 
 
 let app = express();
@@ -51,21 +50,26 @@ jasmine.configureDefaultReporter({
     jasmineCorePath: jasmine.jasmineCorePath
 });
 
+
 // connect to db
 initializeDb( db => {
-console.log('++++ db initialized ');
+    console.log('++++ db initialized ');
+
 	// internal middleware
 	app.use(middleware({ config, db }));
 
     // endpoints
-	app.use('/', api({ config, db }));
+	// app.use('/', api(config, db));
 
 	app.server.listen(process.env.PORT || config.port);
 
-	console.log(`Started on port ${app.server.address().port}`);
+	console.log(`[bombay.js] Started on port ${app.server.address().port}`);
 
-  jasmine.addSpecFile(__dirname + '/spec/firstSpec.js');
-  jasmine.execute();
+    bombay.expressConfig.app = app;
+    bombay.expressConfig.expressDB = db;
+    bombay.expressConfig.router = api;
+    jasmine.addSpecFile(__dirname + '/spec/firstSpec.js');
+    jasmine.execute();
 });
 
 export default app;
