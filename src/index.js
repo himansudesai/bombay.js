@@ -8,6 +8,7 @@ import api from './api';
 import config from './config.json';
 import { Router } from 'express';
 import bombay from './lib/bombay';
+import jasmineUtils from './utils/jasmineUtils';
 global['RSVP'] = require('rsvp');
 global['bombay'] = bombay;
 
@@ -26,41 +27,14 @@ app.use(bodyParser.json({
 
 global['app'] = app;
 
-var JasmineLib = require('jasmine');
-var jasmine = new JasmineLib();
-
-jasmine.loadConfig({
-    spec_dir: __dirname + '/spec',
-    spec_files: [
-        'utils/**/*[sS]pec.js'
-    ],
-    helpers: [
-        'helpers/**/*.js'
-    ],
-    stopSpecOnExpectationFailure: false,
-    random: false
-});
-
-jasmine.configureDefaultReporter({
-    timer: new jasmine.jasmine.Timer(),
-    print: function() {
-        process.stdout.write(util.format.apply(this, arguments));
-    },
-    showColors: true,
-    jasmineCorePath: jasmine.jasmineCorePath
-});
-
+jasmineUtils.initializeJasmine();
 
 // connect to db
 initializeDb( db => {
     console.log('++++ db initialized ');
-
 	// internal middleware
 	app.use(middleware({ config, db }));
-
-    // endpoints
 	// app.use('/', api(config, db));
-
 	app.server.listen(process.env.PORT || config.port);
 
 	console.log(`[bombay.js] Started on port ${app.server.address().port}`);
@@ -68,8 +42,8 @@ initializeDb( db => {
     bombay.expressConfig.app = app;
     bombay.expressConfig.expressDB = db;
     bombay.expressConfig.router = api;
-    jasmine.addSpecFile(__dirname + '/spec/firstSpec.js');
-    jasmine.execute();
+
+    jasmineUtils.executeJasmineSpecs();
 });
 
 export default app;
