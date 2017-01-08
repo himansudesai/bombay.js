@@ -12,7 +12,6 @@ import jasmineUtils from './utils/jasmineUtils';
 global['RSVP'] = require('rsvp');
 global['bombay'] = bombay;
 
-
 let app = express();
 app.server = http.createServer(app);
 
@@ -31,19 +30,18 @@ jasmineUtils.initializeJasmine();
 
 // connect to db
 initializeDb( db => {
-    console.log('++++ db initialized ');
-	// internal middleware
-	app.use(middleware({ config, db }));
-	// app.use('/', api(config, db));
+	console.log('++++ db initialized ');
+//	app.use(middleware({ config, db }));
+
 	app.server.listen(process.env.PORT || config.port);
 
 	console.log(`[bombay.js] Started on port ${app.server.address().port}`);
 
-    bombay.expressConfig.app = app;
-    bombay.expressConfig.expressDB = db;
-    bombay.expressConfig.router = api;
+	bombay.expressConfig.app = app;
+	bombay.expressConfig.expressDB = db;
+	bombay.expressConfig.router = api;
 
-    jasmineUtils.executeJasmineSpecs();
+	jasmineUtils.executeJasmineSpecs();
 });
 
 export default app;
