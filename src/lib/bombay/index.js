@@ -109,8 +109,7 @@ export default (function () {
     app.use('/', api(cc, db));
   }
 
-  bombay.server.configureEndpoint = function (endpointDef) {
-    console.log('@@@@ inside configureEndpoint');
+  bombay.server.configureEndpoint = function (httpMethod, url) {
     var app = bombay.expressConfig.app;
     var db = bombay.expressConfig.expressDB;
     var api = bombay.expressConfig.router;
@@ -143,13 +142,10 @@ export default (function () {
 
     endpoint.getBody = function(req, res) {
       endpoint.ress = res;
-      console.log('@@@@ IN endpoint.getBody');
       endpoint.waitForInspectRequestCommand.then(function() {
-        console.log('@@@@ endpoint.getBody - resolving request ' + req);
         endpoint.resolveRequest(req);
         return endpoint.waitForRespondCommand;
       }).then(function() {
-        console.log('@@@@ endpoint.getBody - respond command received');
         // var response = { 'parting': 'goodbye' };
         endpoint.resolveResponse();
       }).catch(function (err) {
@@ -161,10 +157,8 @@ export default (function () {
 
     endpoint.getIncomingRequest = function() {
       var p = new RSVP.Promise(function(resolve, reject) {
-        console.log('@@@@ IN endpoint.getIncomingRequest');
         endpoint.inspectRequestCommandReceived();
         endpoint.getRequest.then(function(req) {
-          console.log('@@@@ endpoint.getIncomingRequest - resolving request ' + req);
           resolve(req);
         }).catch(function (err) {
           console.log('++++ Unexpected error in getIncomingRequest.  ' + err);
@@ -176,10 +170,8 @@ export default (function () {
 
     endpoint.respond = function(resp) {
       var p = new RSVP.Promise(function(resolve, reject) {
-        console.log('@@@@ IN endpoint.respond');
         endpoint.respondCommandReceived();
         endpoint.getResponse.then(function() {
-          console.log('@@@@ endpoint.respond - resolving response ' + resp);
           resolve(resp);
           endpoint.ress.json(resp);
         }).catch(function (err) {
@@ -190,11 +182,11 @@ export default (function () {
       return p;
     }
 
-    endpointDef.endpoint = endpoint;
-    var config = {
-      endpointDefs: [endpointDef]
-    };
-    app.use('/', api(config, db));
+    app.use('/', api({
+      endpoint: endpoint,
+      url: url,
+      method: httpMethod
+    }, db));
 
     return endpoint;
   }

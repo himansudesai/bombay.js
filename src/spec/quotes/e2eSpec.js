@@ -25,19 +25,15 @@ describe('JavaScript addition operator', function () {
       // expect(results).toBe(false);
       return bombay.client.setInputVal('GOOG', 'input');
     }).then(function (results) {
-      endpoint = bombay.server.configureEndpoint({
-        'url': 'v1/public/yql',
-        'method': 'GET'
-      });
+      endpoint = bombay.server.configureEndpoint('GET', 'v1/public/yql');
       endpoint.resetPromises();
       return bombay.client.click('simple-http button', 250);
     }).then(function(clickResults) {
       return endpoint.getIncomingRequest();
     }).then(function(req) {
-      var symbol = helper.getStock(req);
+      var symbol = helper.parseStockSymbol(req);
       expect(symbol).toBe('GOOG');
-      var response = helper.getResponse(symbol);
-      return endpoint.respond(response);
+      return endpoint.respond(helper.generateResponse(symbol));
     }).then(function() {
       endpoint.resetPromises();
       return bombay.client.exists('#quote-details');
@@ -52,10 +48,9 @@ describe('JavaScript addition operator', function () {
     }).then(function(clickResults) {
       return endpoint.getIncomingRequest();
     }).then(function(req) {
-      var symbol = helper.getStock(req);
+      var symbol = helper.parseStockSymbol(req);
       expect(symbol).toBe('SPY');
-      var response = helper.getResponse(symbol);
-      return endpoint.respond(response);
+      return endpoint.respond(helper.generateResponse(symbol));
     }).then(function (results) {
       return bombay.client.getTextVal('#company-name', 1500);
     }).then(function (results) {
