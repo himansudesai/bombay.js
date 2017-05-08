@@ -11,7 +11,7 @@ export default (config, db) => {
 
 	var endpoint = config.endpoint;
 	if (config.method == 'GET') {
-		console.log(`[bombay.js] Configuring POST endpoint at ${config.url}`);
+		console.log(`[bombay.js] Configuring GET endpoint at ${config.url}`);
 		api.get('/' + config.url, makeFunction(endpoint.getBody.bind(endpoint)));
 	} else if (config.method == 'POST') {
 		console.log(`[bombay.js] Configuring POST endpoint at ${config.url}`);

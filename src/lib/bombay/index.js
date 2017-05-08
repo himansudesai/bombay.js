@@ -11,7 +11,7 @@ export default (function () {
     expressConfig: {}
   };
   bombay.server.connect = function () {
-    console.log('++++ beginning - socket = ' + bombay.server.socket);
+    console.log('++++ in the beginning - socket = ' + bombay.server.socket);
     var app = bombay.expressConfig.app;
     var promise = new RSVP.Promise(function (resolve, reject) {
       socketServer = require('http').Server(app);
@@ -168,12 +168,26 @@ export default (function () {
       return p;
     }
 
-    endpoint.respond = function(resp) {
+    endpoint.respondWithJson = function(resp) {
       var p = new RSVP.Promise(function(resolve, reject) {
         endpoint.respondCommandReceived();
         endpoint.getResponse.then(function() {
           resolve(resp);
           endpoint.ress.json(resp);
+        }).catch(function (err) {
+          console.log('++++ Unexpected error in respond.  ' + err);
+          throw err;
+        });
+      });
+      return p;
+    }
+
+    endpoint.respondWithString = function(resp) {
+      var p = new RSVP.Promise(function(resolve, reject) {
+        endpoint.respondCommandReceived();
+        endpoint.getResponse.then(function() {
+          resolve(resp);
+          endpoint.ress.send(resp);
         }).catch(function (err) {
           console.log('++++ Unexpected error in respond.  ' + err);
           throw err;
