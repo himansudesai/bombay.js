@@ -4,6 +4,7 @@ export default (function () {
   var JasmineLib = require('jasmine');
   var jasmine = new JasmineLib();
   const fs = require('fs');
+  const nodeUtils = require('util');
 
   utils.initializeJasmine = function () {
 
@@ -22,7 +23,7 @@ export default (function () {
     jasmine.configureDefaultReporter({
       timer: new jasmine.jasmine.Timer(),
       print: function () {
-        process.stdout.write(util.format.apply(this, arguments));
+       process.stdout.write(nodeUtils.format.apply(this, arguments));
       },
       showColors: true,
       jasmineCorePath: jasmine.jasmineCorePath

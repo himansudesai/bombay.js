@@ -30,7 +30,6 @@ jasmineUtils.initializeJasmine();
 
 // connect to db
 initializeDb( db => {
-	console.log('++++ db initialized ');
 //	app.use(middleware({ config, db }));
 
 	app.server.listen(process.env.PORT || config.port);
