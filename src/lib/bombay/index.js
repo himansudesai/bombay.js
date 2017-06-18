@@ -188,6 +188,7 @@ export default (function () {
         endpoint.getResponse.then(function() {
           resolve(resp);
           endpoint.ress.send(resp);
+          endpoint.resetPromises();
         }).catch(function (err) {
           console.log('++++ Unexpected error in respond.  ' + err);
           throw err;
@@ -202,6 +203,7 @@ export default (function () {
       method: httpMethod
     }, db));
 
+    endpoint.resetPromises();
     return endpoint;
   }
 
