@@ -91,6 +91,21 @@ export default (function () {
     return promise;
   }
 
+  bombay.client.visit = function (url, wait) {
+    var promise = new RSVP.Promise(function (resolve, reject) {
+      var msgId = new Date().getTime();
+      var command = { type: 'VISIT', url: url };
+      if (wait) {
+        command.wait = wait;
+      }
+      bombay.server.socket.emit('bom-do', { command: command });
+      bombay.server.socket.on(msgId, function (data) {
+        resolve(data.details);
+      });
+    });
+    return promise;
+  }
+
   bombay.server.bom_it = function (description, cb) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       it(description, function () {
