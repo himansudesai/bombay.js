@@ -28,7 +28,6 @@ describe('JavaScript addition operator', function () {
       return bombay.client.setInputVal('GOOG', 'input');
     }).then(function (results) {
       endpoint = bombay.server.configureEndpoint('GET', 'finance/info');
-      endpoint.resetPromises();
       return bombay.client.click('button#get-stock-quote', 250);
     }).then(function(clickResults) {
       return endpoint.getIncomingRequest();
@@ -37,7 +36,6 @@ describe('JavaScript addition operator', function () {
       expect(symbol).toBe('GOOG');
       return endpoint.respondWithString(helper.generateResponse(symbol));
     }).then(function() {      
-      endpoint.resetPromises();
       return bombay.client.exists('#quote-details');
     }).then(function (results) {
       expect(results).toBe(true);
