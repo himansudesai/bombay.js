@@ -67,6 +67,13 @@
         socket.emit(command.msgId, {command: command, details: ((domEle.length > 0) ? $(domEle).text() : '')});
       }, timeoutVal);
     }
+    if (command.type == 'VISIT') {
+      var timeoutVal = (data.command.wait) ? data.command.wait : 500;
+      var domEle = $(command.css);
+      setTimeout(function() {
+        window.location = command.url;
+      }, timeoutVal);
+    }
   }
 
   function log(msg) {
