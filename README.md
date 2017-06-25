@@ -15,20 +15,20 @@ To illustrate the characteristics of local E2E style tests, consider the followi
   </tr>
   <tr>
     <td>Fast</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td> 
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
   </tr>
     <td>Reliable</td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td> 
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
   </tr>
     <td>Isolates Failures</td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td> 
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
   </tr>
     <td>Simulates a real user</td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td> 
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
   </tr>
 </table>
 
@@ -43,41 +43,41 @@ To that list, we can add a few more categories where unit tests have an advantag
   </tr>
   <tr>
     <td>Fast</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td> 
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td><img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
     <td>Reliable</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td> 
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td><img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
     <td>Isolates Failures</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td> 
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td><img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
     <td>Simulates a real user</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td>&nbsp;&nbsp;<img src="happy.png" /></td>
-    <td><img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="happy.png" /></td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
   </tr>
     <td>Devs agree to write/maintain</td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td>&nbsp;&nbsp;<img src="dad.png" /></td>
-    <td><img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
   </tr>
     <td>Test setup is easy</td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td><img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
   </tr>
     <td>Unhappy path testing</td>
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td>&nbsp;&nbsp;<img src="sad.png" /></td>
-    <td><img src="happy.png" /></td> 
+    <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
 </table>
