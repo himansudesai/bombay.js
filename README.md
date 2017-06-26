@@ -34,6 +34,8 @@ To illustrate the characteristics of local E2E style tests, consider the followi
 
 To that list, we can add a few more categories where unit tests have an advantage over end-to-end test.  We also add another column for Bombay.js's local e2e style tests.
 
+Bombay.js is functional but currently a work in progress.  Features like https endpoints and easy ways to handle http response headers are missing.
+
 <table style="width: 400px; border: 1px solid grey;">
   <tr>
     <th>&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -69,7 +71,7 @@ To that list, we can add a few more categories where unit tests have an advantag
     <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
   </tr>
-    <td>Test setup is easy</td>
+    <td>Easy local setup</td>
     <td>&nbsp;&nbsp;<img src="happy.png" /></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
     <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
