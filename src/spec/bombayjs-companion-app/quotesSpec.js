@@ -22,10 +22,6 @@ describe('JavaScript addition operator', function () {
     const conn = bombay.server.connect();
     console.log('conn = ' + conn);
     conn.then(function() {
-      return bombay.client.visit('http://www.cnn.com', 2000);
-    }).then(function() {
-      return bombay.client.visit('http://localhost:7777', 2000);
-    }).then(function () {
       return bombay.client.exists('#quote-details');
     }).then(function (results) {
       // expect(results).toBe(false);
