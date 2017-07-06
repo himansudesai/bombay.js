@@ -71,7 +71,7 @@ Bombay.js is functional but currently a work in progress.  Features like https e
     <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
   </tr>
   </tr>
-    <td>Easy local setup</td>
+    <td>Test Environent Setup</td>
     <td>&nbsp;&nbsp;<img src="happy.png" /></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="sad.png" /></td>
     <td>&nbsp;&nbsp;<img src="happy.png" /></td> 
