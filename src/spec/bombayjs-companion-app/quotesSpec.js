@@ -22,6 +22,8 @@ describe('JavaScript addition operator', function () {
     const conn = bombay.server.connect();
     console.log('conn = ' + conn);
     conn.then(function() {
+      return bombay.client.visit('/#/stocks');
+    }).then(function() {
       return bombay.client.exists('#quote-details');
     }).then(function (results) {
       // expect(results).toBe(false);
@@ -61,6 +63,29 @@ describe('JavaScript addition operator', function () {
       return bombay.client.getTextVal("#pct-change", 500);
     }).then(function (results) {
       expect(results).toEqual('1.29');
+      return bombay.client.visit('/#/settings');
+    }).then(function() {
+      return bombay.client.clickByDynamicSelection(selectFunctionStringForBand('Police'), 500);
+    }).then(function() {
+      return bombay.client.getInputVal('#settings-detail #num-albums', 2000);
+    }).then(function(results) {
+      expect(results).toEqual('12');
+      return bombay.client.setInputVal('8', '#settings-detail #num-albums');
+    }).then(function(results) {
+      return bombay.client.clickByDynamicSelection(selectFunctionStringForBand('Beatles'), 500);
+    }).then(function() {
+      return bombay.client.getInputVal('#settings-detail #num-albums', 2000);
+    }).then(function(results) {
+      expect(results).toEqual('12');
+      return bombay.client.clickByDynamicSelection(selectFunctionStringForBand('Police'), 500);
+    }).then(function(results) {
+      return bombay.client.getInputVal('#settings-detail #num-albums', 2000);
+    }).then(function(results) {
+      expect(results).toEqual('8');
+      return bombay.client.click('#update-button', 2000);
+    }).then(function(results) {
+    //   return bombay.client.visit('/#/stocks');
+    // }).then(function(results) {
       done();
     }).catch(function (err) {
       console.log('++++ Unexpected error in spec.  ' + err + '\nExiting...');
@@ -68,5 +93,15 @@ describe('JavaScript addition operator', function () {
       done(-1);
     });
   })
-
 })
+
+function selectFunctionStringForBand(band) {
+  var fnStr = 
+    "    var  allLi = $('li.band, selected-band');    " +
+    "    return allLi.filter(function(idx) {    " +
+    "      return $(allLi[idx]).text() == '" + band + "'" +
+    "    });    ";
+  return fnStr;
+}
+
+

@@ -65,6 +65,21 @@ export default (function () {
     return promise;
   }
 
+  bombay.client.clickByDynamicSelection = function (fn, wait) {
+    var promise = new RSVP.Promise(function (resolve, reject) {
+      var msgId = new Date().getTime();
+      var command = { type: 'CLICK-JS', fn: fn, msgId: msgId };
+      if (wait) {
+        command.wait = wait;
+      }
+      bombay.server.socket.emit('bom-do', { command: command });
+      bombay.server.socket.on(msgId, function (data) {
+        resolve(data.details);
+      });
+    });
+    return promise;
+  }
+
   bombay.client.setInputVal = function (val, css) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
@@ -91,10 +106,25 @@ export default (function () {
     return promise;
   }
 
+    bombay.client.getInputVal = function (css, wait) {
+    var promise = new RSVP.Promise(function (resolve, reject) {
+      var msgId = new Date().getTime();
+      var command = { type: 'INPUT-VAL', css: css, msgId: msgId };
+      if (wait) {
+        command.wait = wait;
+      }
+      bombay.server.socket.emit('bom-do', { command: command });
+      bombay.server.socket.on(msgId, function (data) {
+        resolve(data.details);
+      });
+    });
+    return promise;
+  }
+
   bombay.client.visit = function (url, wait) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
-      var command = { type: 'VISIT', url: url };
+      var command = { type: 'VISIT', url: url, msgId: msgId };
       if (wait) {
         command.wait = wait;
       }

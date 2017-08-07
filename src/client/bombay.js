@@ -32,7 +32,6 @@
         var currentVal = $(domEle).val();
         // clear out the current contents of the input field
         for (var val_i=0; val_i<currentVal.length; val_i++) {
-        console.log('      _ backspacing...');
           $(domEle).sendkeys ('{backspace}');
         }
         console.log('     _ sending ' + command.val);
@@ -43,6 +42,16 @@
     if (command.type == 'CLICK') {
       var timeoutVal = (data.command.wait) ? data.command.wait : 250;
       var domEle = $(command.css);
+      setTimeout(function() {
+        $(domEle).click();
+      }, timeoutVal);
+      socket.emit(command.msgId, { command: command, success: true });
+    }
+    if (command.type == 'CLICK-JS') {
+      var timeoutVal = (data.command.wait) ? data.command.wait : 250;
+      var fnStr = command.fn;
+     var fn = new Function(fnStr);
+      var domEle = fn();
       setTimeout(function() {
         $(domEle).click();
       }, timeoutVal);
@@ -66,6 +75,18 @@
         var domEle = $(command.css);
         socket.emit(command.msgId, {command: command, details: ((domEle.length > 0) ? $(domEle).text() : '')});
       }, timeoutVal);
+    }
+    if (command.type == 'INPUT-VAL') {
+      var timeoutVal = (data.command.wait) ? data.command.wait : 500;
+      var domEle = $(command.css);
+      setTimeout(function() {
+        var domEle = $(command.css);
+        socket.emit(command.msgId, {command: command, details: ((domEle.length > 0) ? $(domEle).val() : '')});
+      }, timeoutVal);
+    }
+    if (command.type == 'VISIT') {
+      window.location = command.url;
+      socket.emit(command.msgId, {command: command, details: ''});
     }
   }
 
