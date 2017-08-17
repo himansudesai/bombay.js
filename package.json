@@ -1,14 +1,15 @@
 {
   "name": "bombay.js",
-  "version": "0.0.1",
-  "description": "Mock all the things",
+  "version": "0.0.2",
+  "description": "Local E2E testing",
   "main": "dist",
   "scripts": {
     "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-0\"",
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "start": "node dist",
     "prestart": "npm run -s build",
-    "test": "eslint src"
+    "test": "babel-node src --presets es2015,stage-0",
+    "old-test": "eslint src"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",

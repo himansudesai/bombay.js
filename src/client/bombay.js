@@ -24,9 +24,8 @@
     var command = data.command;
     console.log('++++ command = ' + JSON.stringify(command));
     if (command.type == 'SET-INPUT-VAL') {
-      console.log('++++ command.css = ' + command.css);
       var domEle = $(command.css);
-      if (!domEle) {
+      if (domEle.length < 1) {
         socket.emit(command.msgId, { command: command, success: false, details: 'No matching elements for ' + command.css });
       } else {
         var currentVal = $(domEle).val();
@@ -34,62 +33,137 @@
         for (var val_i=0; val_i<currentVal.length; val_i++) {
           $(domEle).sendkeys ('{backspace}');
         }
-        console.log('     _ sending ' + command.val);
         $(domEle).sendkeys (command.val);
         socket.emit(command.msgId, { command: command, success: true });
       }
     }
     if (command.type == 'CLICK') {
-      var timeoutVal = (data.command.wait) ? data.command.wait : 250;
       var domEle = $(command.css);
-      setTimeout(function() {
-        $(domEle).click();
-      }, timeoutVal);
+      $(domEle).click();
       socket.emit(command.msgId, { command: command, success: true });
     }
     if (command.type == 'CLICK-JS') {
-      var timeoutVal = (data.command.wait) ? data.command.wait : 250;
       var fnStr = command.fn;
-     var fn = new Function(fnStr);
+      var fn = new Function(fnStr);
       var domEle = fn();
-      setTimeout(function() {
-        $(domEle).click();
-      }, timeoutVal);
+      $(domEle).click();
       socket.emit(command.msgId, { command: command, success: true });
     }
     if (command.type == 'EXISTS') {
-      var domEle = $(command.css);
-      if (domEle.length < 1) {
-        setTimeout(function() {
-          var domEle = $(command.css);
-          socket.emit(command.msgId, {command: command, details: ((domEle.length > 0) ? true : false)});
-        }, 1000);
-      } else {
-        socket.emit(command.msgId, {command: command, details: true});
-      }
+      repeatAsNecessary(function() {
+        var domElements = $(command.css);
+        return {
+          val: domElements.length > 0,
+          done: (domElements.length > 0 ? true: false)
+        };
+      }, function(exists) {
+        socket.emit(command.msgId, {command: command, details: exists});
+      });
     }
     if (command.type == 'TEXT-VAL') {
-      var timeoutVal = (data.command.wait) ? data.command.wait : 500;
-      var domEle = $(command.css);
-      setTimeout(function() {
+      repeatAsNecessary(function() {
         var domEle = $(command.css);
-        socket.emit(command.msgId, {command: command, details: ((domEle.length > 0) ? $(domEle).text() : '')});
-      }, timeoutVal);
+        var text = $(domEle).text();      
+         return {
+          val: text,
+          done: (text == command.expectedVal ? true: false)
+        };
+      }, function(val) {
+        socket.emit(command.msgId, {command: command, details: val});
+      });
     }
     if (command.type == 'INPUT-VAL') {
-      var timeoutVal = (data.command.wait) ? data.command.wait : 500;
-      var domEle = $(command.css);
-      setTimeout(function() {
+      repeatAsNecessary(function() {
         var domEle = $(command.css);
-        socket.emit(command.msgId, {command: command, details: ((domEle.length > 0) ? $(domEle).val() : '')});
-      }, timeoutVal);
+        var text = $(domEle).val();
+         return {
+          val: text,
+          done: (text == command.expectedVal ? true: false)
+        };
+      }, function(val) {
+        socket.emit(command.msgId, {command: command, details: val});
+      });
     }
     if (command.type == 'VISIT') {
       window.location = command.url;
       socket.emit(command.msgId, {command: command, details: ''});
     }
+    if (command.type == 'COUNT') {
+      console.log('    __ count begin');
+      repeatAsNecessary(function() {
+        var domElements = $(command.css);
+        return {
+          val: domElements.length,
+          done: (domElements.length == command.expectedCount ? true: false)
+        };
+      }, function(length) {
+        console.log('    __ count end');
+        socket.emit(command.msgId, {command: command, details: length});
+      });
+    }
+    if (command.type == 'SELECT-BY-DISPLAY-VALUE') {
+      var selectElement = $(command.css);
+      if (selectElement.length > 0) {
+        var opts = $("" + command.css + " option");
+        var idx = -1;
+        for (var i=0; i<opts.length; i++) {
+          if ($(opts[i]).text() == command.val) {
+            idx = i;
+          }
+        }
+        if (idx >= 0) {
+          $(command.css).val($(opts[idx]).val());
+          var nativeEvent = document.createEvent('Event');
+          nativeEvent.initEvent('change', true, true);
+          $(command.css)[0].dispatchEvent(nativeEvent);
+        }
+        socket.emit(command.msgId, {command: command, details: {success: true, error: undefined}});
+      } else {
+        socket.emit(command.msgId, {command: command, details: {error: 'Select element with css ' + command.css + ' does not exist'}});
+      }
+    }
+    if (command.type == 'SELECT-BY-OPTION-VALUE') {
+      var selectElement = $(command.css);
+      if (selectElement.length < 1) {
+        var val = command.val;
+        var opts = $("" + command.css + " option");
+        var idx = -1;
+        for (var i=0; i<opts.length; i++) {
+          if (opts[i].val() == val) {
+            idx = i;
+          }
+        }
+        if (idx >= 0) {
+          var nativeEvent = document.createEvent('Event');
+          nativeEvent.initEvent('change', true, true);
+          $(selectElement)[0].dispatchEvent(nativeEvent);
+        }
+        socket.emit(command.msgId, {command: command, details: {success: true, error: undefined}});
+      } else {
+        socket.emit(command.msgId, {command: command, details: {error: 'Select element with css ' + command.css + ' does not exist'}});
+      }
+    }
   }
 
   function log(msg) {
     console.log('++++ ' + msg);
+  }
+
+  function repeatAsNecessary(doBlock, returnBlock) {
+    var delays = [0, 250, 250, 1000, 2000];
+    var idx = 0;
+    setTimeoutAndPeformDoBlock();
+
+    function setTimeoutAndPeformDoBlock() {
+      setTimeout(function() {
+        idx++;
+        result = doBlock();
+        if ( result.done || (idx >= delays.length) ) {
+          returnBlock(result.val);
+        } else {
+          setTimeoutAndPeformDoBlock();
+        }
+      }, delays[idx]);
+    }
+
   }

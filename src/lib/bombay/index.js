@@ -10,6 +10,7 @@ export default (function () {
     },
     expressConfig: {}
   };
+
   bombay.server.connect = function () {
     console.log('++++ in the beginning - socket = ' + bombay.server.socket);
     var app = bombay.expressConfig.app;
@@ -26,7 +27,7 @@ export default (function () {
         setTimeout(function () {
           resolve();
         }, 500);
-      });
+      })
     });
     return promise;
   }
@@ -39,10 +40,14 @@ export default (function () {
     }
   }
 
-  bombay.client.exists = function (css) {
+  bombay.client.exists = function (css, wait) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
-      bombay.server.socket.emit('bom-do', { command: { type: 'EXISTS', css: css, msgId: msgId } });
+      var command = { type: 'EXISTS', css: css, msgId: msgId }
+      if (wait) {
+        command.wait = wait;
+      }
+      bombay.server.socket.emit('bom-do', { command:  command});
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details);
       });
@@ -50,13 +55,10 @@ export default (function () {
     return promise;
   }
 
-  bombay.client.click = function (css, wait) {
+  bombay.client.count = function (css, expectedCount) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
-      var command = { type: 'CLICK', css: css, msgId: msgId };
-      if (wait) {
-        command.wait = wait;
-      }
+      var command = { type: 'COUNT', css: css, expectedCount: expectedCount, msgId: msgId };
       bombay.server.socket.emit('bom-do', { command: command });
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details);
@@ -65,13 +67,22 @@ export default (function () {
     return promise;
   }
 
-  bombay.client.clickByDynamicSelection = function (fn, wait) {
+  bombay.client.click = function (css) {
+    var promise = new RSVP.Promise(function (resolve, reject) {
+      var msgId = new Date().getTime();
+      var command = { type: 'CLICK', css: css, msgId: msgId };
+      bombay.server.socket.emit('bom-do', { command: command });
+      bombay.server.socket.on(msgId, function (data) {
+        resolve(data.details);
+      });
+    });
+    return promise;
+  }
+
+  bombay.client.clickByDynamicSelection = function (fn) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
       var command = { type: 'CLICK-JS', fn: fn, msgId: msgId };
-      if (wait) {
-        command.wait = wait;
-      }
       bombay.server.socket.emit('bom-do', { command: command });
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details);
@@ -91,13 +102,34 @@ export default (function () {
     return promise;
   }
 
-  bombay.client.getTextVal = function (css, wait) {
+  bombay.client.setSelectByDisplayValue = function (css, val) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
-      var command = { type: 'TEXT-VAL', css: css, msgId: msgId };
-      if (wait) {
-        command.wait = wait;
-      }
+      var command = { type: 'SELECT-BY-DISPLAY-VALUE', val: val, css: css, msgId: msgId };
+      bombay.server.socket.emit('bom-do', { command:  command});
+      bombay.server.socket.on(msgId, function (data) {
+        resolve(data.details);
+      });
+    });
+    return promise;
+  }
+
+  bombay.client.setSelectByOptionValue = function (css, val) {
+    var promise = new RSVP.Promise(function (resolve, reject) {
+      var msgId = new Date().getTime();
+      var command = { type: 'SELECT-BY-OPTION-VALUE', val: val, css: css, msgId: msgId };
+      bombay.server.socket.emit('bom-do', { command:  command});
+      bombay.server.socket.on(msgId, function (data) {
+        resolve(data.details);
+      });
+    });
+    return promise;
+  }
+
+  bombay.client.getTextVal = function (css, expectedVal) {
+    var promise = new RSVP.Promise(function (resolve, reject) {
+      var msgId = new Date().getTime();
+      var command = { type: 'TEXT-VAL', css: css, expectedVal: expectedVal, msgId: msgId };
       bombay.server.socket.emit('bom-do', { command: command });
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details);
@@ -106,13 +138,10 @@ export default (function () {
     return promise;
   }
 
-    bombay.client.getInputVal = function (css, wait) {
+  bombay.client.getInputVal = function (css, expectedVal) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
-      var command = { type: 'INPUT-VAL', css: css, msgId: msgId };
-      if (wait) {
-        command.wait = wait;
-      }
+      var command = { type: 'INPUT-VAL', css: css, expectedVal: expectedVal, msgId: msgId };
       bombay.server.socket.emit('bom-do', { command: command });
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details);
@@ -121,13 +150,10 @@ export default (function () {
     return promise;
   }
 
-  bombay.client.visit = function (url, wait) {
+  bombay.client.visit = function (url) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
       var command = { type: 'VISIT', url: url, msgId: msgId };
-      if (wait) {
-        command.wait = wait;
-      }
       bombay.server.socket.emit('bom-do', { command: command });
       bombay.server.socket.on(msgId, function (data) {
         resolve(data.details);
@@ -204,6 +230,7 @@ export default (function () {
       var p = new RSVP.Promise(function(resolve, reject) {
         endpoint.inspectRequestCommandReceived();
         endpoint.getRequest.then(function(req) {
+          console.log('~~~~ REQ actually came in');
           resolve(req);
         }).catch(function (err) {
           console.log('++++ Unexpected error in getIncomingRequest.  ' + err);
@@ -219,6 +246,8 @@ export default (function () {
         endpoint.getResponse.then(function() {
           resolve(resp);
           endpoint.ress.json(resp);
+          endpoint.resetPromises();
+          
         }).catch(function (err) {
           console.log('++++ Unexpected error in respond.  ' + err);
           throw err;
