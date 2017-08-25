@@ -6,7 +6,7 @@ export default (function () {
       var self = this;
       var stocksEndpoint;
       var promise = new RSVP.Promise(function(resolve, reject) {    
-        bombay.client.clickByDynamicSelection(self.bandSelectFunctionStr('Police')).then(function() {
+        bombay.client.clickByDynamicSelection(self.bandSelectFunctionStr('Bangles')).then(function() {
           return bombay.client.getInputVal('#settings-detail #num-albums', '12');
         }).then(function(results) {
           expect(results).toEqual('12');
@@ -17,7 +17,7 @@ export default (function () {
           return bombay.client.getInputVal('#settings-detail #num-albums', '12');
         }).then(function(results) {
           expect(results).toEqual('12');
-          return bombay.client.clickByDynamicSelection(self.bandSelectFunctionStr('Police'));
+          return bombay.client.clickByDynamicSelection(self.bandSelectFunctionStr('Bangles'));
         }).then(function(results) {
           return bombay.client.getInputVal('#settings-detail #num-albums', '8');
         }).then(function(results) {

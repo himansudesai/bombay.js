@@ -40,7 +40,7 @@ export default (function () {
         .then(respondWithBanglesAlbums)
         .then(getAlbumComponentsCount)
         .then(function(results) {
-          expect(results).toBe(12);
+          expect(results).toBe(8);
           resolve();
         })
       });
@@ -68,7 +68,7 @@ export default (function () {
       function respondWithBanglesAlbums(req) {
         var requestParameters = self.parseBandAndAlbumCount(req);
         expect(requestParameters.band).toBe('Bangles');
-        expect(requestParameters.albumCount).toBe('12');
+        expect(requestParameters.albumCount).toBe('8');
         return albumsEndpoint.respondWithJson(self.generateResponse(requestParameters.band, requestParameters.albumCount));
       }
 
