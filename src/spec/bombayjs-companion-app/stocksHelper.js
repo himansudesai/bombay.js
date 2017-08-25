@@ -47,6 +47,50 @@ export default (function () {
       return '//  ' + JSON.stringify([mockQuote]);
     }
 
+    stocksPageTests() {
+      var self = this;
+      var stocksEndpoint;
+      var promise = new RSVP.Promise(function(resolve, reject) {
+        bombay.client.setInputVal('GOOG', 'input').then(function (results) {
+          stocksEndpoint = bombay.server.configureEndpoint('GET', 'finance/info');
+          return bombay.client.click('button#get-stock-quote', 250);
+        }).then(function(clickResults) {
+          return stocksEndpoint.getIncomingRequest();
+        }).then(function(req) {
+          var symbol = self.parseStockSymbol(req);
+          expect(symbol).toBe('GOOG');
+          return stocksEndpoint.respondWithString(self.generateResponse(symbol));
+        }).then(function() {      
+          return bombay.client.exists('#quote-details');
+        }).then(function (results) {
+          expect(results).toBe(true);
+          return bombay.client.getTextVal('#sym', 'GOOG');
+        }).then(function (results) {
+          expect(results).toEqual('GOOG');
+          return bombay.client.getTextVal("#pct-change", '-0.49');
+        }).then(function (results) {
+          expect(results).toEqual('-0.49')
+          return bombay.client.setInputVal('TSLA', 'input');
+        }).then(function (results) {
+          return bombay.client.click('button#get-stock-quote');
+        }).then(function(clickResults) {
+          return stocksEndpoint.getIncomingRequest();
+        }).then(function(req) {
+          var symbol = self.parseStockSymbol(req);
+          expect(symbol).toBe('TSLA');
+          return stocksEndpoint.respondWithString(self.generateResponse(symbol));
+        }).then(function (results) {
+          return bombay.client.getTextVal('#sym', 'TSLA');
+        }).then(function (results) {
+          expect(results).toEqual('TSLA');
+          return bombay.client.getTextVal("#pct-change", '1.29');
+        }).then(function (results) {
+          expect(results).toEqual('1.29');
+          resolve();
+        });
+      });
+      return promise;
+    }
   }
 
   return Helper;

@@ -230,7 +230,6 @@ export default (function () {
       var p = new RSVP.Promise(function(resolve, reject) {
         endpoint.inspectRequestCommandReceived();
         endpoint.getRequest.then(function(req) {
-          console.log('~~~~ REQ actually came in');
           resolve(req);
         }).catch(function (err) {
           console.log('++++ Unexpected error in getIncomingRequest.  ' + err);
