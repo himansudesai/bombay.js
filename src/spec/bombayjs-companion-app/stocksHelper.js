@@ -7,10 +7,7 @@ export default (function () {
 
     parseStockSymbol(req) {
       var url_parts = url.parse(req.url, true);
-      var query = url_parts.query;
-      var str = query.q;
-      var stock = str.substring(7);
-      return stock;
+      return url_parts.query.q;
     }
 
     generateResponse(symbol) {

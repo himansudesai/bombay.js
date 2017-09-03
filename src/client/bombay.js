@@ -5,8 +5,10 @@
     socket = io.connect( url, { reconnection: false } );
     setTimeout(function() {
       if (!socket.connected) {
-        log('Unable to connect (' + retry + ').  Retrying in 10 seconds');
-        setTimeout(function() { connect(url) }, 10000);
+        if ((retry % 10) == 0) {
+          log('Unable to connect (' + retry + ').  Retrying in 2 seconds');
+        }
+        setTimeout(function() { connect(url) }, 2000);
       } else {
         log('Connected on attempt (' + retry + ')');
         socket.on('disconnect', function() { retry = 0; connect(url) });

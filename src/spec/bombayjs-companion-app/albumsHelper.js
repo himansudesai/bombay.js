@@ -31,15 +31,27 @@ export default (function () {
       const self = this;
       var promise = new RSVP.Promise(function(resolve, reject) {
         albumsEndpoint = bombay.server.configureEndpoint('GET', 'albums');
+
         bombay.client.click('#update-button', 2000)
-        .then(waitForIncomingRequest)
-        .then(respondWithBeatlesAlbums)
-        .then(getAlbumComponentsCount)
-        .then(selectBangles)
-        .then(waitForIncomingRequest)
-        .then(respondWithBanglesAlbums)
-        .then(getAlbumComponentsCount)
-        .then(function(results) {
+        .then(function() {
+          return albumsEndpoint.getIncomingRequest();
+        }).then(function(req) {
+          var requestParameters = self.parseBandAndAlbumCount(req);
+          expect(requestParameters.band).toBe('Beatles');
+          expect(requestParameters.albumCount).toBe('12');
+          return albumsEndpoint.respondWithJson(self.generateResponse(requestParameters.band, requestParameters.albumCount));
+        }).then(function() {
+          return bombay.client.count('album-comp', 12);
+        }).then(function(results) {
+          expect(results).toBe(12);
+          return bombay.client.setSelectByDisplayValue('#band', 'Bangles');
+        })
+        .then(function() {
+          return albumsEndpoint.getIncomingRequest();
+        }).then(respondWithBanglesAlbums)
+        .then(function() {
+          return bombay.client.count('album-comp', 12);
+        }).then(function(results) {
           expect(results).toBe(8);
           resolve();
         })
