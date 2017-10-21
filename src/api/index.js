@@ -15,15 +15,9 @@ export default (config, db) => {
 		api.get('/' + config.url, makeFunction(endpoint.getBody.bind(endpoint)));
 	} else if (config.method == 'POST') {
 		console.log(`[bombay.js] Configuring POST endpoint at ${config.url}`);
-		api.post('/' + config.url, (req, res) => {
-			res.json({ 'parting': 'goodbye' });
-		});
+		api.post('/' + config.url, makeFunction(endpoint.getBody.bind(endpoint)));
 	}
 	return api;
-}
-
-function get_foo() {
-
 }
 
 function makeFunction(endpointbody) {

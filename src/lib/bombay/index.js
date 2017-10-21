@@ -12,7 +12,6 @@ export default (function () {
   };
 
   bombay.server.connect = function () {
-    console.log('++++ in the beginning - socket = ' + bombay.server.socket);
     var app = bombay.expressConfig.app;
     var promise = new RSVP.Promise(function (resolve, reject) {
       socketServer = require('http').Server(app);
@@ -91,12 +90,12 @@ export default (function () {
     return promise;
   }
 
-  bombay.client.setInputVal = function (val, css) {
+  bombay.client.setInputVal = function (css, val) {
     var promise = new RSVP.Promise(function (resolve, reject) {
       var msgId = new Date().getTime();
       bombay.server.socket.emit('bom-do', { command: { type: 'SET-INPUT-VAL', val: val, css: css, msgId: msgId } });
       bombay.server.socket.on(msgId, function (data) {
-        resolve(data.details);
+        doneExecuting(resolve, reject, 'SET-INPUT-VAL', css, data);
       });
     });
     return promise;
@@ -217,7 +216,6 @@ export default (function () {
         endpoint.resolveRequest(req);
         return endpoint.waitForRespondCommand;
       }).then(function() {
-        // var response = { 'parting': 'goodbye' };
         endpoint.resolveResponse();
       }).catch(function (err) {
         var errStr = '++++ Unexpected error in endpoint.getBody() ' + err;
@@ -278,6 +276,14 @@ export default (function () {
 
     endpoint.resetPromises();
     return endpoint;
+  }
+
+  function doneExecuting(resolve, reject, command, css, data) {
+    if (data.success) {
+      resolve(data.details);
+    } else {
+      reject(`Command ${command} did not succeed for css ${css}`);
+    }
   }
 
   return bombay;

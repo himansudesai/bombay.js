@@ -13,7 +13,7 @@
         log('Connected on attempt (' + retry + ')');
         socket.on('disconnect', function() { retry = 0; connect(url) });
         socket.on('bom-do', function (data) {
-          console.log('got bom-do message'); 
+          log('got bom-do message'); 
           bomDo(data); 
         });
       }
@@ -22,9 +22,8 @@
   connect('http://localhost:3033');
 
   function bomDo(data) {
-    console.log('++++ bomDo');
     var command = data.command;
-    console.log('++++ command = ' + JSON.stringify(command));
+    log('++++ bomDo command = ' + JSON.stringify(command));
     if (command.type == 'SET-INPUT-VAL') {
       var domEle = $(command.css);
       if (domEle.length < 1) {
@@ -91,7 +90,6 @@
       socket.emit(command.msgId, {command: command, details: ''});
     }
     if (command.type == 'COUNT') {
-      console.log('    __ count begin');
       repeatAsNecessary(function() {
         var domElements = $(command.css);
         return {
@@ -99,7 +97,6 @@
           done: (domElements.length == command.expectedCount ? true: false)
         };
       }, function(length) {
-        console.log('    __ count end');
         socket.emit(command.msgId, {command: command, details: length});
       });
     }

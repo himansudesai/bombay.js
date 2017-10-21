@@ -2,6 +2,9 @@ var url = require('url');
 
 export default (function () {
 
+  const beatles_count = 12;
+  const bangles_count = 8;
+
   class Helper {
 
     parseBandAndAlbumCount(req) {
@@ -29,67 +32,64 @@ export default (function () {
     albumsPageTests() {
       var albumsEndpoint;
       const self = this;
-      var promise = new RSVP.Promise(function(resolve, reject) {
-        albumsEndpoint = bombay.server.configureEndpoint('GET', 'albums');
 
+      
+      var promise = new RSVP.Promise(function(resolve, reject) {
+        
+        albumsEndpoint = bombay.server.configureEndpoint('GET', 'albums');
         bombay.client.click('#update-button', 2000)
+
         .then(function() {
+
           return albumsEndpoint.getIncomingRequest();
+
         }).then(function(req) {
+
           var requestParameters = self.parseBandAndAlbumCount(req);
           expect(requestParameters.band).toBe('Beatles');
-          expect(requestParameters.albumCount).toBe('12');
+          expect(parseInt(requestParameters.albumCount)).toBe(beatles_count);
           return albumsEndpoint.respondWithJson(self.generateResponse(requestParameters.band, requestParameters.albumCount));
+
         }).then(function() {
-          return bombay.client.count('album-comp', 12);
+
+          return bombay.client.count('album-comp', beatles_count);
+
         }).then(function(results) {
-          expect(results).toBe(12);
+
+          expect(results).toBe(beatles_count);
           return bombay.client.setSelectByDisplayValue('#band', 'Bangles');
-        })
-        .then(function() {
+
+        }).then(function() {
+
           return albumsEndpoint.getIncomingRequest();
-        }).then(respondWithBanglesAlbums)
-        .then(function() {
-          return bombay.client.count('album-comp', 12);
+
+        }).then(function respondWithBanglesAlbums(req) {
+
+          var requestParameters = self.parseBandAndAlbumCount(req);
+          expect(requestParameters.band).toBe('Bangles');
+          expect(requestParameters.albumCount).toBe('' + bangles_count);
+          return albumsEndpoint.respondWithJson(self.generateResponse(requestParameters.band, requestParameters.albumCount));
+
+        }).then(function() {
+
+          return bombay.client.count('album-comp', bangles_count);
+
         }).then(function(results) {
-          expect(results).toBe(8);
+
+          expect(results).toBe(bangles_count);
           resolve();
+
         })
       });
 
-      function waitForIncomingRequest() {
-        return albumsEndpoint.getIncomingRequest();
-      }
-
-      function respondWithBeatlesAlbums(req) {
-        var requestParameters = self.parseBandAndAlbumCount(req);
-        expect(requestParameters.band).toBe('Beatles');
-        expect(requestParameters.albumCount).toBe('12');
-        return albumsEndpoint.respondWithJson(self.generateResponse(requestParameters.band, requestParameters.albumCount));
-      }
-
-      function getAlbumComponentsCount() {
-        return bombay.client.count('album-comp', 12);
-      }
-
-      function selectBangles(results) {
-        expect(results).toBe(12);
-        return bombay.client.setSelectByDisplayValue('#band', 'Bangles');
-      }
-
-      function respondWithBanglesAlbums(req) {
-        var requestParameters = self.parseBandAndAlbumCount(req);
-        expect(requestParameters.band).toBe('Bangles');
-        expect(requestParameters.albumCount).toBe('8');
-        return albumsEndpoint.respondWithJson(self.generateResponse(requestParameters.band, requestParameters.albumCount));
-      }
-
       return promise;
     }
+
   }
   const albumsMap = createAlbumsMap();
   return Helper;
 })();
+
 
 function createAlbumsMap() {
   return {
