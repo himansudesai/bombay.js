@@ -19,9 +19,7 @@ export default (function () {
         "result": [
           {
             "category": null,
-//            "icon_url": "https://assets.chucknorris.host/img/avatar/chuck-norris.png",
             "id": "fwnuhljktgw4vj7ra0axow",
-//            "url": "http://api.chucknorris.io/jokes/fwnuhljktgw4vj7ra0axow",
             "value": joke
           }
         ]

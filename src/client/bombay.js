@@ -64,7 +64,7 @@
     if (command.type == 'TEXT-VAL') {
       repeatAsNecessary(function() {
         var domEle = $(command.css);
-        var text = $(domEle).text();      
+        var text = $(domEle).text().trim();
          return {
           val: text,
           done: (text == command.expectedVal ? true: false)
