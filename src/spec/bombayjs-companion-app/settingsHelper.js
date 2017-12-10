@@ -58,8 +58,10 @@ export default (function () {
         }).then(function(req) {
 
           expect(req.body.greeting).toEqual(greeting);
-          resolve();
+          return postEndpoint.respondWithJson(JSON.stringify({"resonse": "hello to you as well!"}));
 
+        }).then(function(req) {
+          resolve();
         })   
       });
       return promise;
